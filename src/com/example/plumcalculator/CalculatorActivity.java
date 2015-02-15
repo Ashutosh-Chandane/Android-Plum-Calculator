@@ -21,7 +21,7 @@ public class CalculatorActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calculator);
         disp=(TextView)findViewById(R.id.textView);
-        disp.setText("");
+        disp.setText("0");
 
         final int idList[]={R.id.button,R.id.button2,R.id.button3,R.id.button4,R.id.button5,R.id.button6,R.id.button7,
                 R.id.button8,R.id.button9,R.id.button10,R.id.button11,R.id.button12,R.id.button13,R.id.button14};
@@ -31,13 +31,14 @@ public class CalculatorActivity extends ActionBarActivity {
         }
     }
 
-    public void mMath(String op){
+    public void doMath(String op){
+    	
     		NumberBf = Integer.parseInt(disp.getText().toString());// save the screen
-    		mResult();
+    		calResult();
             if(op.equals("=")) {
                 NumberBf = 0;
                 result = 0;
-                firstOperator="=";
+                //firstOperator="=";
             }
     		
     }
@@ -48,17 +49,23 @@ public void getKeyboard(String numb){
     if(ScrCurrent.equals("0")) {
         ScrCurrent="";
     }
-    // to avoid adding numbers after equals
-	if(!firstOperator.equals("=") && initialOperator.equals("")) {
+    // to avoid numbers to get added after equals
+	if(!firstOperator.equals("=") /*&& initialOperator.equals("")*/) {
+		if(initialOperator.equals("-"))
+		{
+			numb = "-"+numb;
+			initialOperator = "";
+		}
+		
 	    ScrCurrent += numb;
 	    disp.setText(ScrCurrent);
 	}
 
 }
-    public void mResult(){
-        if(initialOperator.equals("-")){
+    public void calResult(){
+        /*if(initialOperator.equals("-")){
         	NumberBf = -NumberBf;
-        }
+        }*/
     	if(firstOperator.equals("+") || firstOperator.equals("")){
             result = result + NumberBf;
         }
@@ -70,43 +77,46 @@ public void getKeyboard(String numb){
             result=NumberBf;
 
         }
-            disp.setText(String.valueOf(result));
-
+ /*       if(result == 0)
+        {
+        	firstOperator = "";
+        }*/	
+        disp.setText(String.valueOf(result));
 
     }
-// new class ButtonClickListener
+
     private class ButtonClickListener implements View.OnClickListener{
     @Override
     public void onClick(View v){
-        //check
 
             switch (v.getId()) {
-                case R.id.button13: //clear screen
+                case R.id.button13: //for clearing screen
                     result = 0;
                     disp.setText("0");
                     NumberBf = 0;
                     firstOperator = "";
+                    initialOperator = "";
                     break;
-                case R.id.button4: // plus
-                    if(disp.getText().toString().equals("")){
+                case R.id.button4: // addition
+                    if(disp.getText().toString().equals("0")){
                     	initialOperator = "+";
                     }
                     else{
                     	if(!isOperation) {
-                            mMath("+");
+                            doMath("+");
                         }
                         firstOperator = "+";
                         isOperation = true;
                     }
                     break;
                 case R.id.button10:
-                	if(disp.getText().toString().equals("")){
+                	if(disp.getText().toString().equals("0")){
                     	initialOperator = "-";
                     }
                     else{
                     	if(!isOperation)
                         {
-                            mMath("-");
+                    		doMath("-");
                         }
                         firstOperator = "-";
                         isOperation = true;
@@ -117,7 +127,7 @@ public void getKeyboard(String numb){
                 		if (isOperation) {
                             break;
                         }
-                        mMath("=");
+                		doMath("=");
                     }
                          break;
                 default:
